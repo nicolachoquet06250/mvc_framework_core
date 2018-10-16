@@ -134,6 +134,11 @@ class Install
 		}
 	}
 
+	public function genere_htaccess() {
+		require __DIR__.'/../router/autoload.php';
+
+	}
+
 	public function clone_repos() {
 		$this->install_sys_require();
 		foreach ($this->repos as $repo_name => $repo) {
