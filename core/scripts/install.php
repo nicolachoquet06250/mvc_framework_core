@@ -6,6 +6,6 @@
 
 	$install = new Install();
 
-//	$install->clone_repos();
+	$install->clone_repos();
 	$install->genere_all();
 	$install->install_all();

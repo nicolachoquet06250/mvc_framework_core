@@ -15,12 +15,12 @@ class Install
 
 		$this->repos = [
 			'orm'    => [
-				'repo' => 'https://github.com/nicolachoquet06250/mvc_framework_core_orm.git',
-				'path' => 'core/orm'
+				'repo' => 'https://github.com/nicolachoquet06250/mvc_framework_orm.git',
+				'path' => __DIR__.'/../orm'
 			],
 			'router' => [
-				'repo' => 'https://github.com/nicolachoquet06250/mvc_framework_core_router.git',
-				'path' => 'core/router'
+				'repo' => 'https://github.com/nicolachoquet06250/mvc_framework_router.git',
+				'path' => __DIR__.'/../router'
 			],
 		];
 
@@ -137,7 +137,7 @@ class Install
 	public function clone_repos() {
 		$this->install_sys_require();
 		foreach ($this->repos as $repo_name => $repo) {
-			$this->system('git clone '.$repo['repo'].' ../../'.$repo['path']);
+			$this->system('git clone '.$repo['repo'].' '.$repo['path']);
 		}
 
 		return $this;
@@ -172,7 +172,7 @@ class Install
 	protected function install_sys_require() {
 		foreach ($this->sys_require as $require) {
 			if (!$this->sys_require_exists($require)) {
-				$this->system('sudo apt install '.$require);
+				$this->system('sudo apt-get install '.$require);
 			}
 		}
 	}

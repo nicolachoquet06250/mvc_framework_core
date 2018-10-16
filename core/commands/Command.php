@@ -2,12 +2,18 @@
 
 namespace mvc_framework\core\commands;
 
+require __DIR__.'/../install/autoload.php';
+
 class Command {
-	private $argv, $app_infos;
+	private $argv, $app_infos, $install;
 
 	public function __construct($argv) {
 		$this->argv = $argv;
-		$this->app_infos = json_decode(file_get_contents(__DIR__.'/../../conf/app_infos.json'), true);
+		$this->app_infos = file_exists(__DIR__.'/../../conf/app_infos.json') ?
+			json_decode(file_get_contents(__DIR__.'/../../conf/app_infos.json'), true) : [
+				'app_name' => 'mvc_framework',
+			];
+		$this->install = new \mvc_framework\core\install\Install();
 	}
 
 	public function get_app_infos() {
@@ -21,22 +27,20 @@ class Command {
 	public function execute() {
 		if(isset($this->get_app_infos()['scripts'])) {
 			if(isset($this->get_app_infos()['scripts'][$this->get_argv()[0]])) {
-				require __DIR__.'/../install/autoload.php';
-
 				$cmd = $this->get_app_infos()['scripts'][$this->get_argv()[0]];
-				list($out) = (new \mvc_framework\core\install\Install())->system($cmd);
+				list($out) = $this->install->system($cmd);
 			}
 			else {
-				var_dump(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php');
+				$cmd = 'php '.__DIR__.'/../scripts/'.$this->get_argv()[0].'.php';
 				if(file_exists(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php')) {
-					var_dump('TOTO');
+					$this->install->system($cmd);
 				}
 			}
 		}
 		else {
-			var_dump(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php');
+			$cmd = 'php '.__DIR__.'/../scripts/'.$this->get_argv()[0].'.php';
 			if(file_exists(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php')) {
-				var_dump('TOTO');
+				$this->install->system($cmd);
 			}
 		}
 	}
