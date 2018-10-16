@@ -1,0 +1,9 @@
+#!/usr/bin/php
+<?php
+
+use mvc_framework\core\commands\Command;
+
+	require file_exists('core/autoload.php') ? 'core/autoload.php' : 'core/commands/Command.php';
+	Command::clean_argv($argv);
+	$command = new Command($argv);
+	$command->execute();
