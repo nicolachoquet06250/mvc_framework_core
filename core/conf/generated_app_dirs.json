@@ -1,0 +1,10 @@
+[
+  "app/private",
+  "app/public/js",
+  "app/public/css",
+  "app/public/scss",
+  "app/public/images",
+  "app/public/mvc/models",
+  "app/public/mvc/controllers",
+  "app/public/mvc/blade_cache"
+]

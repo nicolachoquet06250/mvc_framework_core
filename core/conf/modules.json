@@ -1,0 +1,9 @@
+[
+  "vendor",
+  "starter",
+  "install",
+  "logger",
+  "orm",
+  "router",
+  "mvc"
+]

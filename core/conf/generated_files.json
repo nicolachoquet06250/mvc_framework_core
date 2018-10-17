@@ -1,0 +1,5 @@
+{
+  "package.json": "genere_package_json",
+  "composer.json": "genere_composer_json",
+  "autoload.php": "genere_autoload"
+}

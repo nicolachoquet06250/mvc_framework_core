@@ -1,0 +1,10 @@
+{
+  "orm": {
+    "repo": "https://github.com/nicolachoquet06250/mvc_framework_orm.git",
+    "path": "{__DIR__}/../orm"
+  },
+  "router": {
+    "repo": "https://github.com/nicolachoquet06250/mvc_framework_router.git",
+    "path": "{__DIR__}/../router"
+  }
+}

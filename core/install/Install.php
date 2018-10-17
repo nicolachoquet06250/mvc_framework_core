@@ -4,59 +4,24 @@ namespace mvc_framework\core\install;
 
 class Install
 {
-	protected $generated_files, $repos, $sys_require, $app_infos, $packagers, $modules, $app_dirs;
+	protected $generated_files, $repos,
+		$sys_require, $app_infos,
+		$packagers, $modules,
+		$app_dirs;
 
 	public function __construct() {
-		$this->generated_files = [
-			'package.json'  => 'genere_package_json',
-			'composer.json' => 'genere_composer_json',
-			'autoload.php'  => 'genere_autoload',
-		];
-
-		$this->repos = [
-			'orm'    => [
-				'repo' => 'https://github.com/nicolachoquet06250/mvc_framework_orm.git',
-				'path' => __DIR__.'/../orm'
-			],
-			'router' => [
-				'repo' => 'https://github.com/nicolachoquet06250/mvc_framework_router.git',
-				'path' => __DIR__.'/../router'
-			],
-		];
-
-		$this->sys_require = [
-			'git',
-			'composer',
-			'nodejs',
-			'node',
-			'npm',
-		];
-
+		$this->generated_files = json_decode(file_get_contents(__DIR__.'/../conf/generated_files.json'), true);
+		$this->repos = json_decode(file_get_contents(__DIR__.'/../conf/external_repositorys.json'), true);
+		foreach ($this->repos as $name => $repo) {
+			$this->repos[$name]['path'] = str_replace('{__DIR__}', __DIR__, $repo['path']);
+		}
+		$this->sys_require = json_decode(file_get_contents(__DIR__.'/../conf/dependencies.json'), true);
 		$this->app_infos = file_exists(__DIR__.'/../../conf/app_infos.json') ?
-			json_decode(file_get_contents(__DIR__.'/../../conf/app_infos.json'), true) : [
-				'app_name' => 'mvc_framework'
-			];
-
-		$this->packagers = [
-			'npm'      => 'npm_install',
-			'composer' => 'composer_install',
-		];
-
-		$this->modules = [
-			'vendor',
-			'install',
-			'logger',
-			'orm',
-			'router',
-		];
-
-		$this->app_dirs = [
-			'app/private',
-			'app/public/css',
-			'app/public/scss',
-			'app/public/js',
-			'app/public/images',
-		];
+			json_decode(file_get_contents(__DIR__.'/../../conf/app_infos.json'), true)
+			: json_decode(file_get_contents(__DIR__.'/../conf/default_app_infos.json'), true);
+		$this->packagers = json_decode(file_get_contents(__DIR__.'/../conf/packagers.json'), true);
+		$this->modules = json_decode(file_get_contents(__DIR__.'/../conf/modules.json'), true);
+		$this->app_dirs = json_decode(file_get_contents(__DIR__.'/../conf/generated_app_dirs.json'), true);
 	}
 
 	public function genere_all() {
