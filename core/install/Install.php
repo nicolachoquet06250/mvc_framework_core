@@ -2,8 +2,9 @@
 
 namespace mvc_framework\core\install;
 
-class Install
-{
+use mvc_framework\core\router\Htaccess;
+
+class Install {
 	protected $generated_files, $repos,
 		$sys_require, $app_infos,
 		$packagers, $modules,
@@ -69,7 +70,7 @@ class Install
 		$autoload = '<?php
 	';
 		foreach ($this->modules as $module) {
-			$autoload .= 'require "'.$module.'/autoload.php";
+			$autoload .= 'require_once "'.$module.'/autoload.php";
 	';
 		}
 		return $autoload;
@@ -82,7 +83,10 @@ class Install
 		}
 		$conf = [
 			"app_name" => "mvc_framework",
+			"host" => "localhost",
+			"port" => 2107,
 			"scripts"  => [
+				"start" => "php -S localhost:2107",
 				"install" => "php core/scripts/install.php",
 				"update"  => "php core/scripts/update.php",
 			],
@@ -94,14 +98,41 @@ class Install
 	protected function genere_app_dirs() {
 		foreach ($this->app_dirs as $app_dir) {
 			if(!is_dir(__DIR__.'/../../'.$app_dir)) {
-				mkdir(__DIR__.'/../../'.$app_dir, 0777, true);
+				if(strstr($app_dir, 'routage') && in_array('router', $this->app_dirs)) {
+					mkdir(__DIR__.'/../../'.$app_dir, 0777, true);
+				}
 			}
 		}
 	}
 
 	public function genere_htaccess() {
-		require __DIR__.'/../router/autoload.php';
+		if(is_dir(__DIR__.'/../router')) {
+			require_once __DIR__.'/../router/autoload.php';
+			$htaccess_json = json_decode(file_get_contents(realpath(__DIR__.'/../../conf/alternative_router.json')), true);
+			$app_infos     = json_decode(file_get_contents(realpath(__DIR__.'/../../conf/app_infos.json')), true);
+			$host          = $app_infos['host'];
+			$port          = $app_infos['port'];
+			Htaccess::init();
+			foreach ($htaccess_json as $rewrite) {
+				$method      = explode(': ', $rewrite)[0];
+				$content     = explode(': ', $rewrite)[1];
+				$pattern     = explode(' => ', $content)[0];
+				$destination = explode(' => ', $content)[1];
+				$destination = str_replace(
+					[
+						'{host}',
+						'{port}'
+					], [
+						$host,
+						$port
+					], $destination);
+				Htaccess::$method($pattern, $destination);
+			}
+			Htaccess::genere();
 
+			echo json_encode($htaccess_json);
+		}
+		else echo "cette fonctionnalitée est actuellement indisponible";
 	}
 
 	public function clone_repos() {

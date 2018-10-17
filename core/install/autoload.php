@@ -1,3 +1,3 @@
 <?php
 
-require 'Install.php';
+require_once 'Install.php';

@@ -3,8 +3,9 @@
 ])
 
 @section('content')
-    "argv" : {!! json_encode($argv) !!}
-    {{--<div>--}}
-        {{--My name is Nicolas !!!--}}
-    {{--</div>--}}
+    @if(isset($argv))
+        "argv" : {!! json_encode($argv) !!}
+    @else
+        "argv" : null
+    @endif
 @endsection

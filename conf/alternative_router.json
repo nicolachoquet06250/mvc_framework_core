@@ -1,0 +1,4 @@
+[
+  "rewrite_rule: ^$ => http://{host}/Get/HelloWorld",
+  "rewrite_rule: ^([0-9])$ => http://{host}/Get/HelloWorld/Get/HelloWorld?nb=$1"
+]

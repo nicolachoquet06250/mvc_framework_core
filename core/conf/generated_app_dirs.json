@@ -6,5 +6,6 @@
   "app/public/images",
   "app/public/mvc/models",
   "app/public/mvc/controllers",
-  "app/public/mvc/blade_cache"
+  "app/public/mvc/blade_cache",
+  "app/public/mvc/routage"
 ]

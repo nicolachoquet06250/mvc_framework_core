@@ -2,7 +2,7 @@
 
 namespace mvc_framework\core\commands;
 
-require __DIR__.'/../install/autoload.php';
+require_once __DIR__.'/../install/autoload.php';
 
 class Command {
 	private $argv, $app_infos, $install;
@@ -28,18 +28,19 @@ class Command {
 		if(isset($this->get_app_infos()['scripts'])) {
 			if(isset($this->get_app_infos()['scripts'][$this->get_argv()[0]])) {
 				$cmd = $this->get_app_infos()['scripts'][$this->get_argv()[0]];
-				list($out) = $this->install->system($cmd);
+				$this->install->system($cmd);
 			}
 			else {
-				$cmd = 'php '.__DIR__.'/../scripts/'.$this->get_argv()[0].'.php';
-				if(file_exists(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php')) {
-					$this->install->system($cmd);
+				$cmd = 'php '.realpath(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php');
+				if(file_exists(realpath(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php'))) {
+					list($out) = $this->install->system($cmd);
+					var_dump($out);
 				}
 			}
 		}
 		else {
 			$cmd = 'php '.__DIR__.'/../scripts/'.$this->get_argv()[0].'.php';
-			if(file_exists(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php')) {
+			if(file_exists(realpath(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php'))) {
 				$this->install->system($cmd);
 			}
 		}

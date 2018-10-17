@@ -7,7 +7,10 @@ use mvc_framework\core\mvc\Controller;
 
 class HelloWorld extends Controller {
 	public function Get() {
-
+		return $this->templating->view()->make('index', [
+			'content_type' => 'application/json',
+			'title' => 'HelloWorld',
+		]);
 	}
 
 	public function Post() {

@@ -1,4 +1,4 @@
 <?php
 
-require 'Controller.php';
-require 'Model.php';
+require_once 'Controller.php';
+require_once 'Model.php';

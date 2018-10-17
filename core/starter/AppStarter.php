@@ -2,6 +2,7 @@
 
 namespace mvc_framework\core\starter;
 
+use mvc_framework\core\router\Router;
 use Philo\Blade\Blade;
 
 class AppStarter {
@@ -16,10 +17,18 @@ class AppStarter {
 	}
 
 	public function execute() {
-		return $this->blade->view()->make('index', [
-			'content_type' => 'application/json',
-			'argv' => $this->argv
-		])->render();
+		if(class_exists('\mvc_framework\core\router\Router')) {
+			$dir = opendir(__DIR__.'/../../app/public/mvc/routage');
+			while (($file = readdir($dir)) !== false) {
+				if($file !== '.' && $file !== '..') {
+					require __DIR__.'/../../app/public/mvc/routage/'.$file;
+				}
+			}
+			return Router::execute_route($_SERVER['REQUEST_URI'], $this->blade, $this->argv);
+		}
+		else {
+			var_dump($_SERVER['REQUEST_URI']);
+		}
 	}
 
 	public static function HTTP_VARS_CLEANED() {
