@@ -5,6 +5,6 @@
 @section('content')
     {
         "title": "Erreur 404",
-        "message": "Erreur 404 - Page non trouvée !"
+        "message": "{{ $message ?? 'Erreur 404 - Page non trouvée !' }}"
     }
 @endsection
