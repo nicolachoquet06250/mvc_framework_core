@@ -31,17 +31,16 @@ class Command {
 				$this->install->system($cmd);
 			}
 			else {
-				$cmd = 'php '.realpath(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php');
+				$cmd = realpath(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php');
 				if(file_exists(realpath(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php'))) {
-					list($out) = $this->install->system($cmd);
-					var_dump($out);
+					$this->install->include_php_file($cmd);
 				}
 			}
 		}
 		else {
-			$cmd = 'php '.__DIR__.'/../scripts/'.$this->get_argv()[0].'.php';
+			$cmd = realpath(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php');
 			if(file_exists(realpath(__DIR__.'/../scripts/'.$this->get_argv()[0].'.php'))) {
-				$this->install->system($cmd);
+				$this->install->include_php_file($cmd);
 			}
 		}
 	}

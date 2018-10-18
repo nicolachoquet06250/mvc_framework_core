@@ -8,6 +8,8 @@ use mvc_framework\core\mvc\Controller;
 class Errors extends Controller {
 	public function _404() {
 		header('HTTP/1.0 404 NOT FOUND');
-		return $this->templating->view()->make('errors.404', $this->http_argv)->render();
+		return $this->get_template('errors.404', [
+			'argv' => $this->get_argv()
+		])->render();
 	}
 }

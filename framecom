@@ -2,6 +2,9 @@
 <?php
 
     use mvc_framework\core\commands\Command;
+
+    ini_set('display_errors', 'on');
+
     if(file_exists(__DIR__.'/core/autoload.php')) {
         require_once __DIR__.'/core/autoload.php';
     }

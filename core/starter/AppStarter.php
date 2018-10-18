@@ -21,7 +21,7 @@ class AppStarter {
 			$dir = opendir(__DIR__.'/../../app/public/mvc/routage');
 			while (($file = readdir($dir)) !== false) {
 				if($file !== '.' && $file !== '..') {
-					require __DIR__.'/../../app/public/mvc/routage/'.$file;
+					require_once __DIR__.'/../../app/public/mvc/routage/'.$file;
 				}
 			}
 			return Router::execute_route($_SERVER['REQUEST_URI'], $this->blade, $this->argv);

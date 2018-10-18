@@ -9,4 +9,3 @@
 	$install->clone_repos();
 	$install->genere_all();
 	$install->install_all();
-	$install->genere_htaccess();

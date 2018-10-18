@@ -2,8 +2,6 @@
 
 namespace mvc_framework\core\install;
 
-use mvc_framework\core\router\Htaccess;
-
 class Install {
 	protected $generated_files, $repos,
 		$sys_require, $app_infos,
@@ -29,7 +27,6 @@ class Install {
 		$this->genere_base_conf();
 		$this->genere_app_dirs();
 		foreach ($this->generated_files as $generated_file => $function) {
-			var_dump(__DIR__.'../../'.$generated_file);
 			file_put_contents(__DIR__.'../../'.$generated_file, $this->$function());
 		}
 
@@ -98,41 +95,9 @@ class Install {
 	protected function genere_app_dirs() {
 		foreach ($this->app_dirs as $app_dir) {
 			if(!is_dir(__DIR__.'/../../'.$app_dir)) {
-				if(strstr($app_dir, 'routage') && in_array('router', $this->app_dirs)) {
-					mkdir(__DIR__.'/../../'.$app_dir, 0777, true);
-				}
+				mkdir(__DIR__.'/../../'.$app_dir, 0777, true);
 			}
 		}
-	}
-
-	public function genere_htaccess() {
-		if(is_dir(__DIR__.'/../router')) {
-			require_once __DIR__.'/../router/autoload.php';
-			$htaccess_json = json_decode(file_get_contents(realpath(__DIR__.'/../../conf/alternative_router.json')), true);
-			$app_infos     = json_decode(file_get_contents(realpath(__DIR__.'/../../conf/app_infos.json')), true);
-			$host          = $app_infos['host'];
-			$port          = $app_infos['port'];
-			Htaccess::init();
-			foreach ($htaccess_json as $rewrite) {
-				$method      = explode(': ', $rewrite)[0];
-				$content     = explode(': ', $rewrite)[1];
-				$pattern     = explode(' => ', $content)[0];
-				$destination = explode(' => ', $content)[1];
-				$destination = str_replace(
-					[
-						'{host}',
-						'{port}'
-					], [
-						$host,
-						$port
-					], $destination);
-				Htaccess::$method($pattern, $destination);
-			}
-			Htaccess::genere();
-
-			echo json_encode($htaccess_json);
-		}
-		else echo "cette fonctionnalitée est actuellement indisponible";
 	}
 
 	public function clone_repos() {
@@ -164,6 +129,10 @@ class Install {
 		];
 	}
 
+	public function include_php_file($file_path) {
+		include $file_path;
+	}
+
 	public function install_all() {
 		foreach ($this->packagers as $packager => $function) {
 			$this->$function();
@@ -173,7 +142,7 @@ class Install {
 	protected function install_sys_require() {
 		foreach ($this->sys_require as $require) {
 			if (!$this->sys_require_exists($require)) {
-				$this->system('sudo apt-get install '.$require);
+				$this->system('sudo apt-get install '.$require.' -y');
 			}
 		}
 	}

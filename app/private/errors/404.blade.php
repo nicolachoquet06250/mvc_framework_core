@@ -1,8 +1,10 @@
-@extends('common.layout', [
+@extends('common.layout-api', [
     'title' => 'Erreur 404',
-    'content_type' => 'application/json',
 ])
 
 @section('content')
-    "message": "Erreur 404 - Page non trouvée !"
+    {
+        "title": "Erreur 404",
+        "message": "Erreur 404 - Page non trouvée !"
+    }
 @endsection
