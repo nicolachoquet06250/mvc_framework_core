@@ -2,6 +2,7 @@
 
 namespace mvc_framework\core\starter;
 
+use mvc_framework\app\mvc\controllers\Errors;
 use mvc_framework\core\router\Router;
 use Philo\Blade\Blade;
 
@@ -27,7 +28,19 @@ class AppStarter {
 			return Router::execute_route($_SERVER['REQUEST_URI'], $this->blade, $this->argv);
 		}
 		else {
-			var_dump($_SERVER['REQUEST_URI']);
+			$uri_base = explode('?', $_SERVER['REQUEST_URI'])[0];
+			$uri_base = explode('/', $uri_base);
+			$ctrl = $uri_base[1];
+			$method = ucfirst(strtolower($_SERVER['REQUEST_METHOD']));
+			if(file_exists(realpath(__DIR__.'/../../app/public/mvc/controllers/'.$ctrl.'.php'))) {
+				require_once realpath(__DIR__.'/../../app/public/mvc/controllers/'.$ctrl.'.php');
+				$ctrl_class = '\mvc_framework\app\mvc\controllers\\'.$ctrl;
+				if(in_array($method, get_class_methods($ctrl_class))) {
+					return (new $ctrl_class($this->blade, $this->argv))->$method();
+				}
+				return self::_404($this->blade, $this->argv);
+			}
+			return self::_404($this->blade, $this->argv);
 		}
 	}
 
@@ -42,5 +55,11 @@ class AppStarter {
 			'VARS' => $_GET,
 			'METHOD' => $_SERVER['REQUEST_METHOD']
 		];
+	}
+
+	private static function _404($templating, $http_argv) {
+		require_once __DIR__.'/../../app/public/mvc/controllers/Errors.php';
+		$controller = new Errors($templating, $http_argv);
+		return $controller->_404();
 	}
 }
