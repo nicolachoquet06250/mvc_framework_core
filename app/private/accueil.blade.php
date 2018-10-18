@@ -8,4 +8,7 @@
         <br>
         <input type="submit" value="Envoyer" />
     </form>
+    @component('components.doc_block')
+        coucou toi
+    @endcomponent
 @endsection

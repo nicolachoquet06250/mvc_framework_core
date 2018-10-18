@@ -22,8 +22,8 @@ class Controller {
 
 	protected function get_argv($key = null) {
 		if($key) {
-			if(isset($this->http_argv[$key])) {
-				return $this->http_argv[$key];
+			if(isset($this->http_argv['VARS'][$key])) {
+				return $this->http_argv['VARS'][$key];
 			}
 			else return null;
 		}
@@ -31,7 +31,11 @@ class Controller {
 	}
 
 	protected function get_template($template, $vars = []) {
-		return $this->templating->view()->make($template, $vars);
+		return $this->get_templating()->view()->make($template, $vars);
+	}
+
+	protected function get_templating() {
+		return $this->templating;
 	}
 
 	protected function get_model($class = false) {

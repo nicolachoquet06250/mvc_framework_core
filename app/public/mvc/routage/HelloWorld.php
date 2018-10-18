@@ -11,6 +11,6 @@ Router::route('/toto/@id/@nom/@prenom/@step1', function($templating, $http_argv,
 		'argv' => $http_argv,
 		'http' => $api_argv,
 	]));
-});
+}, 'api');
 
-Router::route_controller('/toto/@id/@nom/@prenom', HelloWorld::class, 'Get');
+Router::route_controller('/toto/@id/@nom/@prenom', HelloWorld::class, 'Get', 'front');

@@ -2,75 +2,77 @@
 
 namespace mvc_framework\core\install;
 
+use mvc_framework\core\paths\Path;
+
 class Install {
 	protected $generated_files, $repos,
-		$sys_require, $app_infos,
+		$sys_require, $app_name,
 		$packagers, $modules,
-		$app_dirs;
+		$app_dirs, $npm_global_dependencies;
 
 	public function __construct() {
-		$this->generated_files = json_decode(file_get_contents(__DIR__.'/../conf/generated_files.json'), true);
-		$this->repos = json_decode(file_get_contents(__DIR__.'/../conf/external_repositorys.json'), true);
-		foreach ($this->repos as $name => $repo) {
-			$this->repos[$name]['path'] = str_replace('{__DIR__}', __DIR__, $repo['path']);
-		}
-		$this->sys_require = json_decode(file_get_contents(__DIR__.'/../conf/dependencies.json'), true);
-		$this->app_infos = file_exists(__DIR__.'/../../conf/app_infos.json') ?
-			json_decode(file_get_contents(__DIR__.'/../../conf/app_infos.json'), true)
-			: json_decode(file_get_contents(__DIR__.'/../conf/default_app_infos.json'), true);
-		$this->packagers = json_decode(file_get_contents(__DIR__.'/../conf/packagers.json'), true);
-		$this->modules = json_decode(file_get_contents(__DIR__.'/../conf/modules.json'), true);
-		$this->app_dirs = json_decode(file_get_contents(__DIR__.'/../conf/generated_app_dirs.json'), true);
+		$this->generated_files = Path::get_file('core_generated-files');
+		$this->repos = Path::get_file('core_external-repositorys');
+		$this->sys_require = Path::get_file('core_dependencies');
+		$this->app_name = Path::get_file('app-infos') !== '' ? Path::get('app-infos_app-name') : Path::get('default-app-infos_app-name');
+		$this->packagers = Path::get_file('core_packagers');
+		$this->modules = Path::get_file('core_modules');
+		$this->app_dirs = Path::get_file('core_generated-app-dirs');
+		$this->npm_global_dependencies = Path::get_file('core_npm-global-dependencies');
 	}
 
-	public function genere_all() {
+	public function genere_all($update = false) {
 		$this->genere_base_conf();
 		$this->genere_app_dirs();
 		foreach ($this->generated_files as $generated_file => $function) {
-			file_put_contents(__DIR__.'../../'.$generated_file, $this->$function());
+			$this->$function(__DIR__.'../../'.$generated_file, $update);
 		}
 
 		return $this;
 	}
 
-	protected function genere_package_json() {
-		return json_encode(
-			[
-				'name'         => $this->app_infos['app_name'],
-				'version'      => '1.0.0',
-				'dependencies' => [
-					'node-sass' => '^4.9.4'
-				]
-			]
-		);
-	}
-
-	protected function genere_composer_json() {
-		return json_encode(
-			[
-				'name'    => $this->app_infos['app_name'],
-				'type'    => 'project',
-				'authors' => [
-					[
-						"name"  => "nicolas.choquet",
-						"email" => "nicolas.choquet@lagardere-active.com",
+	protected function genere_package_json($path, $update = false) {
+		if(!$update) {
+			file_put_contents($path, json_encode(
+				[
+					'name'         => $this->app_name,
+					'version'      => '1.0.0',
+					'dependencies' => [
+						'node-sass' => '^4.9.4'
 					]
-				],
-				'require' => [
-					'philo/laravel-blade' => '3.*'
 				]
-			]
-		);
+			));
+		}
 	}
 
-	protected function genere_autoload() {
+	protected function genere_composer_json($path, $update = false) {
+		if(!$update) {
+			file_put_contents($path, json_encode(
+				[
+					'name'    => $this->app_name,
+					'type'    => 'project',
+					'authors' => [
+						[
+							"name"  => "nicolas.choquet",
+							"email" => "nicolas.choquet@lagardere-active.com",
+						]
+					],
+					'require' => [
+						'philo/laravel-blade' => '3.*'
+					]
+				]
+			));
+		}
+	}
+
+	protected function genere_autoload($path) {
 		$autoload = '<?php
 	';
 		foreach ($this->modules as $module) {
 			$autoload .= 'require_once "'.$module.'/autoload.php";
 	';
 		}
-		return $autoload;
+		file_put_contents($path, $autoload);
 	}
 
 	protected function genere_base_conf() {
@@ -94,7 +96,7 @@ class Install {
 
 	protected function genere_app_dirs() {
 		foreach ($this->app_dirs as $app_dir) {
-			if(!is_dir(__DIR__.'/../../'.$app_dir)) {
+			if(!is_dir($app_dir)) {
 				mkdir(__DIR__.'/../../'.$app_dir, 0777, true);
 			}
 		}
@@ -139,6 +141,7 @@ class Install {
 	}
 
 	public function install_all() {
+		$this->install_npm_global_dependencies();
 		foreach ($this->packagers as $packager => $function) {
 			$this->$function();
 		}
@@ -162,5 +165,15 @@ class Install {
 		if (file_exists(__DIR__.'/../composer.json')) {
 			$this->system('cd core; composer install');
 		}
+	}
+
+	protected function install_npm_global_dependencies() {
+		foreach ($this->npm_global_dependencies as $npm_global_dependency) {
+			$this->system('sudo npm install -g '.$npm_global_dependency);
+		}
+	}
+
+	public function sass_compile() {
+		$this->system('node-sass '.Path::get('sass_source').' --output='.Path::get('sass_dest'));
 	}
 }

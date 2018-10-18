@@ -1,5 +1,7 @@
 [
   "vendor",
+  "Path",
+  "doc_parser",
   "starter",
   "install",
   "logger",

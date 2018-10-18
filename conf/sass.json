@@ -1,0 +1,4 @@
+{
+  "source":  "{__DIR__}/../../app/public/scss",
+  "dest":  "{__DIR__}/../../app/public/css"
+}

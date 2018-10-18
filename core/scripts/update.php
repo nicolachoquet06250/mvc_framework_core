@@ -7,5 +7,5 @@ require_once __DIR__."/../autoload.php";
 $install = new Install();
 
 $install->clone_repos();
-$install->genere_all();
+$install->genere_all(true);
 $install->install_all();

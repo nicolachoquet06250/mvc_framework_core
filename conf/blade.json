@@ -1,0 +1,4 @@
+{
+  "source":  "{__DIR__}/../../app/private",
+  "cache":  "{__DIR__}/../../app/public/mvc/blade_cache"
+}

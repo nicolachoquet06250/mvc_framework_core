@@ -1,0 +1,39 @@
+/**
+@author Nicolas Choquet
+@date 2018-10-18
+
+@title Voici un composant scss
+
+@description
+Voici une description d'un composant scss
+avec des retours à la lignes
+et encore
+et encore.
+
+@modifiers
+.modifier1 - Voici un exemple de modifieur
+.modifier2 - un 2em exemple
+
+@code-demo
+<div class="class">
+	<div class="toto">
+		voici du text
+	</div>
+</div>
+
+<div class="class">
+	<div class="toto">
+		mais il peux aussi y avoir des espaces
+	</div>
+</div>
+*/
+
+@import "../../../core/node_modules/bootstrap/scss/bootstrap";
+@import "../../../core/node_modules/bootstrap/scss/bootstrap-grid";
+@import "../../../core/node_modules/bootstrap/scss/nav";
+
+.class {
+	.toto {
+		color: blue;
+	}
+}
