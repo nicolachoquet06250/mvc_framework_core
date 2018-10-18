@@ -103,7 +103,12 @@ class Install {
 	public function clone_repos() {
 		$this->install_sys_require();
 		foreach ($this->repos as $repo_name => $repo) {
-			$this->system('git clone '.$repo['repo'].' '.$repo['path']);
+			if(is_dir($repo['path'])) {
+				$this->system('cd '.$repo['path'].'; git pull');
+			}
+			else {
+				$this->system('git clone '.$repo['repo'].' '.$repo['path']);
+			}
 		}
 
 		return $this;

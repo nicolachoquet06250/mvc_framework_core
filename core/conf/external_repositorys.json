@@ -6,5 +6,9 @@
   "router": {
     "repo": "https://github.com/nicolachoquet06250/mvc_framework_router.git",
     "path": "{__DIR__}/../router"
+  },
+  "doc_parser":  {
+    "repo":  "https://github.com/nicolachoquet06250/mvc_framework_doc_parser.git",
+    "path": "{__DIR__}/../doc_parser"
   }
 }
