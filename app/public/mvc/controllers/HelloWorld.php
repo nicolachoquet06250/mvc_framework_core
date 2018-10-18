@@ -7,7 +7,7 @@ use mvc_framework\core\mvc\Controller;
 
 class HelloWorld extends Controller {
 	public function Get() {
-		return $this->get_template('accueil')->render();
+		return $this->get_template('accueil', $this->get_api_var())->render();
 	}
 
 	public function Post() {

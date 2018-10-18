@@ -10,5 +10,10 @@
     @else
         "argv" : null
     @endif
+    @if(isset($argv))
+        , "api" : {!! json_encode($http) !!}
+    @else
+        , "api" : null
+    @endif
     }
 @endsection
