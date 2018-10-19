@@ -2,7 +2,7 @@
 
 	use mvc_framework\core\install\Install;
 
-	require_once __DIR__."/../install/Install.php";
+	require_once __DIR__."/../autoload.php";
 
 	$install = new Install();
-	$install->genere_css_doc();
+	$install->css_concat();

@@ -176,4 +176,135 @@ class Install {
 	public function sass_compile() {
 		$this->system('node-sass '.Path::get('sass_source').' --output='.Path::get('sass_dest'));
 	}
+
+	public function genere_css_doc() {
+		$ctrl_content = '<?php
+
+	namespace mvc_framework\app\mvc\controllers;
+	
+	use mvc_framework\core\mvc\Controller;
+	
+	class Documentation extends Controller {
+		public function Get() {
+			if($this->get_argv(\'t\') === \'css\') {
+				return $this->get_template(\'documentation.css\', [\'doc_json\' => json_encode((new \mvc_framework\core\doc_parser\Parser(\'scss\'))->parse())])->render();
+			}
+			return \mvc_framework\core\starter\AppStarter::_404(
+				$this->get_templating(), 
+				$this->get_argv(), 
+				\'La documentation n\\\'est pas encore disponible pour la partie \'.$this->get_argv(\'t\')
+			);
+		}
+	}
+';
+
+		$view_content = '@extends(\'common.layout-front\', [
+	\'title\' => \'Documentation Css\'
+])
+
+@section(\'before_body_css\')
+	<link rel="stylesheet" href="/css/concat/main" />
+	<link rel="stylesheet" href="/css/prism" />
+@endsection
+
+@section(\'body_content\')
+	<nav class="fixed-top bg-white">
+		<ul class="nav nav-tabs">
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+					<i class="fa fa-bars"></i>
+				</a>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="?t=css">css</a>
+					<a class="dropdown-item" href="?t=php">php</a>
+				</div>
+			</li>
+			<li class="nav-item">
+				<a href="#" class="nav-link disabled">
+					Documentation CSS
+				</a>
+			</li>
+		</ul>
+	</nav>
+	{{ $documentation = json_decode($doc_json, true) }}
+	<?php $i = 0; ?>
+	<div class="container">
+		@foreach($documentation as $id => $doc)
+			<div class="row">
+				@if(count($doc) > 1)
+					@component(\'components.doc_block\', [
+						\'doc_part\' => [
+							\'file\' => $id,
+							\'author\' => isset($doc[\'author\']) ? $doc[\'author\'] : \'\',
+							\'date\' => isset($doc[\'date\']) ? $doc[\'date\'] : \'\',
+							\'title\' => $doc[\'title\'],
+							\'description\' => $doc[\'description\'],
+							\'modifiers\' => $doc[\'modifiers\'],
+							\'code_demo\' => isset($doc[\'code-demo\']) ? $doc[\'code-demo\'] : \'\',
+						],
+						\'col\' => 12,
+						\'supplement_class\' => ($i === 0 ? \'mt-5\' : \'\'),
+					])@endcomponent
+					<?php $i++; ?>
+				@endif
+			</div>
+		@endforeach
+	</div>
+@endsection
+
+@section(\'after_body_script\')
+	<script src="/js/prism"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.js"
+			integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+			crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+			integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+			crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
+			integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
+			crossorigin="anonymous"></script>
+	<script>
+        $(function () {
+            $(\'.dropdown-toggle\').dropdown();
+            $(\'a[data-toggle="tab"]\').on(\'shown.bs.tab\', function (e) {
+                e.target // newly activated tab
+                e.relatedTarget // previous active tab
+            })
+        });
+	</script>
+@endsection
+';
+
+		if(!is_dir(__DIR__.'/../../app/private/documentation')) {
+			mkdir(__DIR__.'/../../app/private/documentation');
+		}
+
+		file_put_contents(__DIR__.'/../../app/private/documentation/css.blade.php', $view_content);
+		file_put_contents(__DIR__.'/../../app/public/mvc/controllers/Documentation.php', $ctrl_content);
+	}
+
+	public function css_concat() {
+		$css_path = Path::get('sass_dest');
+
+		$dir = opendir($css_path);
+		$css_files = [];
+		$concat_content = '';
+
+		while (($file = readdir($dir)) !== false) {
+			if($file !== '.' && $file !== '..' && is_file($css_path.'/'.$file)) {
+				$css_files[] = $css_path.'/'.$file;
+			}
+		}
+		asort($css_files);
+
+		foreach ($css_files as $css_file) {
+			$concat_content .= str_replace(["\n", '../../../core'], ['', '../../../../core'], file_get_contents($css_file));
+		}
+
+		if (Path::get('sass_concat') === '') {
+			mkdir(Path::get('sass_dest').'/concat', 0777, true);
+		}
+
+		file_put_contents(Path::get('sass_concat').'/main.css', $concat_content);
+	}
 }

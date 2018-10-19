@@ -1,0 +1,9 @@
+.doc-block {
+	--main-color: black;
+	.card {
+		.code-demo {
+			padding: 10px;
+			border: 1px solid var(--main-color);
+		}
+	}
+}

@@ -20,6 +20,10 @@ class Controller {
 		}
 	}
 
+	/**
+	 * @param null $key
+	 * @return string|array|null
+	 */
 	protected function get_argv($key = null) {
 		if($key) {
 			if(isset($this->http_argv['VARS'][$key])) {

@@ -1,0 +1,23 @@
+/**
+@author Nicolas Choquet
+@date 2018-10-19
+
+@title Voici un composant scss
+
+@description
+Voici une description d'un composant scss
+avec des retours à la lignes
+et encore
+et encore.
+
+@code-demo
+<a href="#">voici un lien</a>
+*/
+
+a {
+	--main-color: black;
+	color: var(--main-color);
+	&:hover {
+		color: var(--main-color);
+	}
+}

@@ -1,4 +1,5 @@
 {
   "source":  "{__DIR__}/../../app/public/scss",
-  "dest":  "{__DIR__}/../../app/public/css"
+  "dest":  "{__DIR__}/../../app/public/css",
+  "concat":  "{__DIR__}/../../app/public/css/concat"
 }

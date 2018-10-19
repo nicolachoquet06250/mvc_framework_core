@@ -27,7 +27,7 @@ class AppStarter {
 			elseif (strstr($_SERVER['REQUEST_URI'], '/site/js/') || strstr($_SERVER['REQUEST_URI'], '/js/')) {
 				header('Content-Type: text/javascript');
 				$path = Path::get('javascript_source').'/'.str_replace(['/site/js/', '/js/'], '', $_SERVER['REQUEST_URI']).'.js';
-				include $path;
+				echo file_get_contents($path);
 			}
 			elseif (strstr($_SERVER['REQUEST_URI'], '/site/images/') || strstr($_SERVER['REQUEST_URI'], '/images/')) {
 				$request_uri = str_replace(['/site/images/', '/images/'], '', $_SERVER['REQUEST_URI']);
