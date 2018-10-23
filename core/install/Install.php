@@ -110,6 +110,12 @@ class Install {
 			}
 			else {
 				$this->system('git clone '.$repo['repo'].' '.$repo['path']);
+				if(is_file($repo['path'].'/composer.json')) {
+					$this->composer_install(explode('core/', $repo['path'])[1]);
+				}
+				if(is_file($repo['path'].'/package.json')) {
+					$this->npm_install(explode('core/', $repo['path'])[1]);
+				}
 			}
 		}
 
@@ -155,15 +161,15 @@ class Install {
 		}
 	}
 
-	protected function npm_install() {
+	protected function npm_install($path='') {
 		if (file_exists(__DIR__.'/../package.json')) {
-			$this->system('cd core; npm install');
+			$this->system('cd core'.($path !== '' ? '/'.$path : $path).'; npm install');
 		}
 	}
 
-	protected function composer_install() {
+	protected function composer_install($path='') {
 		if (file_exists(__DIR__.'/../composer.json')) {
-			$this->system('cd core; composer install');
+			$this->system('cd core'.($path !== '' ? '/'.$path : $path).'; composer install');
 		}
 	}
 

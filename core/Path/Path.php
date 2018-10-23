@@ -54,6 +54,9 @@ class Path {
 
 	private static function clean_path($path) {
 		$path = str_replace('{__DIR__}', __DIR__, $path);
+		if(!realpath($path)) {
+			return $path;
+		}
 		return realpath($path);
 	}
 

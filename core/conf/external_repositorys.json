@@ -10,5 +10,9 @@
   "doc_parser":  {
     "repo":  "https://github.com/nicolachoquet06250/mvc_framework_doc_parser.git",
     "path": "{__DIR__}/../doc_parser"
+  },
+  "websocket":  {
+    "repo":  "https://github.com/nicolachoquet06250/ratchet_test.git",
+    "path": "{__DIR__}/../websocket"
   }
 }
