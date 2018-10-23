@@ -177,7 +177,7 @@ class Install {
 		$this->system('node-sass '.Path::get('sass_source').' --output='.Path::get('sass_dest'));
 	}
 
-	public function genere_css_doc() {
+	public function genere_doc_controller() {
 		$ctrl_content = '<?php
 
 	namespace mvc_framework\app\mvc\controllers;
@@ -185,9 +185,15 @@ class Install {
 	use mvc_framework\core\mvc\Controller;
 	
 	class Documentation extends Controller {
+		private $table_accepted_comments_part = [\'scss\', \'php\'];
 		public function Get() {
-			if($this->get_argv(\'t\') === \'css\') {
-				return $this->get_template(\'documentation.css\', [\'doc_json\' => json_encode((new \mvc_framework\core\doc_parser\Parser(\'scss\'))->parse())])->render();
+			if(is_null($this->get_argv(\'t\'))) {
+				return $this->get_template(\'documentation.index\')->render();
+			}
+			elseif (in_array($this->get_argv(\'t\'), $this->table_accepted_comments_part)) {
+				return $this->get_template(\'documentation.\'.(string)$this->get_argv(\'t\'), [
+					\'doc\' => (new \mvc_framework\core\doc_parser\Parser((string)$this->get_argv(\'t\')))->parse()
+				])->render();
 			}
 			return \mvc_framework\core\starter\AppStarter::_404(
 				$this->get_templating(), 
@@ -198,8 +204,17 @@ class Install {
 	}
 ';
 
+		file_put_contents(__DIR__.'/../../app/public/mvc/controllers/Documentation.php', $ctrl_content);
+
+
+	}
+
+	public function genere_css_doc() {
+		$this->genere_doc_controller();
+		$this->genere_index_doc();
+
 		$view_content = '@extends(\'common.layout-front\', [
-	\'title\' => \'Documentation Css\'
+	\'title\' => \'Documentation CSS\'
 ])
 
 @section(\'before_body_css\')
@@ -215,7 +230,7 @@ class Install {
 					<i class="fa fa-bars"></i>
 				</a>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" href="?t=css">css</a>
+					<a class="dropdown-item" href="?t=scss">css</a>
 					<a class="dropdown-item" href="?t=php">php</a>
 				</div>
 			</li>
@@ -226,13 +241,13 @@ class Install {
 			</li>
 		</ul>
 	</nav>
-	{{ $documentation = json_decode($doc_json, true) }}
+	{{ $documentation = $doc }}
 	<?php $i = 0; ?>
 	<div class="container">
 		@foreach($documentation as $id => $doc)
 			<div class="row">
 				@if(count($doc) > 1)
-					@component(\'components.doc_block\', [
+					@component(\'components.doc_css_block\', [
 						\'doc_part\' => [
 							\'file\' => $id,
 							\'author\' => isset($doc[\'author\']) ? $doc[\'author\'] : \'\',
@@ -279,8 +294,157 @@ class Install {
 			mkdir(__DIR__.'/../../app/private/documentation');
 		}
 
-		file_put_contents(__DIR__.'/../../app/private/documentation/css.blade.php', $view_content);
-		file_put_contents(__DIR__.'/../../app/public/mvc/controllers/Documentation.php', $ctrl_content);
+		file_put_contents(__DIR__.'/../../app/private/documentation/scss.blade.php', $view_content);
+	}
+
+	public function genere_index_doc() {
+		$view_content = '@extends(\'common.layout-front\', [
+\'title\' => \'Documentation\'
+])
+
+@section(\'before_body_css\')
+    <link rel="stylesheet" href="/css/concat/main" />
+    <link rel="stylesheet" href="/css/prism" />
+@endsection
+
+@section(\'body_content\')
+    <nav class="fixed-top bg-white">
+        <ul class="nav nav-tabs">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="?t=scss">css</a>
+                    <a class="dropdown-item" href="?t=php">php</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link disabled">
+                    Documentation
+                </a>
+            </li>
+        </ul>
+    </nav>
+@endsection
+
+@section(\'after_body_script\')
+    <script src="/js/prism"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"
+            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
+            integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
+            crossorigin="anonymous"></script>
+    <script>
+        $(function () {
+            $(\'.dropdown-toggle\').dropdown();
+            $(\'a[data-toggle="tab"]\').on(\'shown.bs.tab\', function (e) {
+                e.target // newly activated tab
+                e.relatedTarget // previous active tab
+            })
+        });
+    </script>
+@endsection
+';
+
+		if(!is_dir(__DIR__.'/../../app/private/documentation')) {
+			mkdir(__DIR__.'/../../app/private/documentation');
+		}
+
+		file_put_contents(__DIR__.'/../../app/private/documentation/index.blade.php', $view_content);
+	}
+
+	public function genere_php_doc() {
+		$this->genere_doc_controller();
+		$this->genere_index_doc();
+
+		$view_content = '@extends(\'common.layout-front\', [
+	\'title\' => \'Documentation PHP\'
+])
+
+@section(\'before_body_css\')
+    <link rel="stylesheet" href="/css/concat/main" />
+    <link rel="stylesheet" href="/css/prism" />
+@endsection
+
+@section(\'body_content\')
+    <nav class="fixed-top bg-white">
+        <ul class="nav nav-tabs">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="?t=scss">css</a>
+                    <a class="dropdown-item" href="?t=php">php</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link disabled">
+                    Documentation PHP
+                </a>
+            </li>
+        </ul>
+    </nav>
+    {{ $documentation = $doc }}
+	<?php $i = 0; ?>
+    <div class="container">
+        @foreach($documentation as $id => $doc)
+            <div class="row">
+                @if(count($doc) > 1)
+                    @if(isset($doc[\'class\']))
+                        @component(\'components.doc_php_block\', [
+	                        \'class_doc\' => $doc[\'class\'],
+	                        \'methods_doc\' => $doc[\'methods\'],
+                            \'col\' => 12,
+                            \'supplement_class\' => ($i === 0 ? \'mt-5\' : \'\'),
+                        ])@endcomponent
+                    @else
+                        @component(\'components.doc_php_block\', [
+                            \'route_doc\' => $doc,
+                            \'col\' => 12,
+                            \'supplement_class\' => ($i === 0 ? \'mt-5\' : \'\'),
+                        ])@endcomponent
+                    @endif
+					<?php $i++; ?>
+                @endif
+            </div>
+        @endforeach
+    </div>
+@endsection
+
+@section(\'after_body_script\')
+    <script src="/js/prism"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"
+            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
+            integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
+            crossorigin="anonymous"></script>
+    <script>
+        $(function () {
+            $(\'.dropdown-toggle\').dropdown();
+            $(\'a[data-toggle="tab"]\').on(\'shown.bs.tab\', function (e) {
+                e.target // newly activated tab
+                e.relatedTarget // previous active tab
+            })
+        });
+    </script>
+@endsection
+';
+		if(!is_dir(__DIR__.'/../../app/private/documentation')) {
+			mkdir(__DIR__.'/../../app/private/documentation');
+		}
+
+		file_put_contents(__DIR__.'/../../app/private/documentation/php.blade.php', $view_content);
+
 	}
 
 	public function css_concat() {
