@@ -38,7 +38,9 @@ class Install {
 					'name'         => $this->app_name,
 					'version'      => '1.0.0',
 					'dependencies' => [
-						'node-sass' => '^4.9.4'
+						'node-sass' => '^4.9.4',
+						'bootstrap' => '^4.1.3',
+						'font-awesome' => '^4.7.0',
 					]
 				]
 			));
@@ -274,16 +276,14 @@ class Install {
 @endsection
 
 @section(\'after_body_script\')
-	<script src="/js/prism"></script>
 	<script src="https://code.jquery.com/jquery-3.3.1.js"
 			integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
 			crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-			integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-			crossorigin="anonymous"></script>
+	<script src="/js/popperjs/popper"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
 			integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
 			crossorigin="anonymous"></script>
+	<script src="/js/prism"></script>
 	<script>
         $(function () {
             $(\'.dropdown-toggle\').dropdown();
@@ -304,70 +304,6 @@ class Install {
 	}
 
 	public function genere_index_doc() {
-		$view_content = '@extends(\'common.layout-front\', [
-\'title\' => \'Documentation\'
-])
-
-@section(\'before_body_css\')
-    <link rel="stylesheet" href="/css/concat/main" />
-    <link rel="stylesheet" href="/css/prism" />
-@endsection
-
-@section(\'body_content\')
-    <nav class="fixed-top bg-white">
-        <ul class="nav nav-tabs">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-bars"></i>
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="?t=scss">css</a>
-                    <a class="dropdown-item" href="?t=php">php</a>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link disabled">
-                    Documentation
-                </a>
-            </li>
-        </ul>
-    </nav>
-@endsection
-
-@section(\'after_body_script\')
-    <script src="/js/prism"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.js"
-            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
-            integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
-            crossorigin="anonymous"></script>
-    <script>
-        $(function () {
-            $(\'.dropdown-toggle\').dropdown();
-            $(\'a[data-toggle="tab"]\').on(\'shown.bs.tab\', function (e) {
-                e.target // newly activated tab
-                e.relatedTarget // previous active tab
-            })
-        });
-    </script>
-@endsection
-';
-
-		if(!is_dir(__DIR__.'/../../app/private/documentation')) {
-			mkdir(__DIR__.'/../../app/private/documentation');
-		}
-
-		file_put_contents(__DIR__.'/../../app/private/documentation/index.blade.php', $view_content);
-	}
-
-	public function genere_php_doc() {
-		$this->genere_doc_controller();
-		$this->genere_index_doc();
-
 		$view_content = '@extends(\'common.layout-front\', [
 	\'title\' => \'Documentation PHP\'
 ])
@@ -424,16 +360,14 @@ class Install {
 @endsection
 
 @section(\'after_body_script\')
-    <script src="/js/prism"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.js"
             integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
             crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-            crossorigin="anonymous"></script>
+    <script src="/js/popperjs/popper"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
             integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
             crossorigin="anonymous"></script>
+    <script src="/js/prism"></script>
     <script>
         $(function () {
             $(\'.dropdown-toggle\').dropdown();
