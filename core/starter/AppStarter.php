@@ -6,9 +6,12 @@ use mvc_framework\app\mvc\controllers\Errors;
 use mvc_framework\core\paths\Path;
 use mvc_framework\core\router\Router;
 use Philo\Blade\Blade;
+use \Exception;
 
 class AppStarter {
 	private $argv, $blade;
+	const PAGE_API = 'api';
+	const PAGE_FRONT = 'front';
 
 	public function __construct($argv) {
 		$this->argv = $argv;
@@ -78,9 +81,15 @@ class AppStarter {
 		];
 	}
 
-	public static function _404($templating, $http_argv, $message = '') {
+	public static function _404($templating, $http_argv, $message = '', $page_type = AppStarter::PAGE_API) {
 		require_once __DIR__.'/../../app/public/mvc/controllers/Errors.php';
 		$controller = new Errors($templating, $http_argv);
-		return $controller->_404($message);
+		return $controller->_404($message, $page_type);
+	}
+
+	public static function _500($templating, $http_argv, $message = '', $page_type = AppStarter::PAGE_API) {
+		require_once __DIR__.'/../../app/public/mvc/controllers/Errors.php';
+		$controller = new Errors($templating, $http_argv);
+		return $controller->_500($message, $page_type);
 	}
 }

@@ -5,18 +5,18 @@ use \mvc_framework\core\paths\Path;
 use \Philo\Blade\Blade;
 
 require_once 'core/autoload.php';
-
+$http_vars_cleaned = AppStarter::HTTP_VARS_CLEANED();
 try {
 	echo (new AppStarter(
-		AppStarter::HTTP_VARS_CLEANED()
+		$http_vars_cleaned
 	))->execute();
 }
 catch (Exception $e) {
-	echo AppStarter::_404(
+	echo AppStarter::_500(
 		new Blade(
 			Path::get('blade_source'),
 			Path::get('blade_cache')
 		),
-		AppStarter::HTTP_VARS_CLEANED(),
-		$e->getMessage());
+		$http_vars_cleaned,
+		$e->getMessage(), AppStarter::PAGE_FRONT);
 }

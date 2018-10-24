@@ -33,7 +33,7 @@
 						$class_doc['doc']['code-demo']['type'] = 'http';
 						$class_doc['doc']['code-demo']['code'] = explode("\n", $class_doc['doc']['code-demo']['code']);
 						foreach ($class_doc['doc']['code-demo']['code'] as $id => $code) {
-							$class_doc['doc']['code-demo']['code'][$id] = (is_null($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$code;
+							$class_doc['doc']['code-demo']['code'][$id] = (!isset($_SERVER['HTTPS']) || (isset($_SERVER['HTTPS']) && is_null($_SERVER['HTTPS'])) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$code;
 						}
 						$class_doc['doc']['code-demo']['code'] = implode("\n", $class_doc['doc']['code-demo']['code']);
 						?>
@@ -67,7 +67,7 @@
 										$doc['code-demo']['type'] = 'http';
 										$doc['code-demo']['code'] = explode("\n", $doc['code-demo']['code']);
 										foreach ($doc['code-demo']['code'] as $id => $code) {
-											$doc['code-demo']['code'][$id] = (is_null($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$doc['code-demo']['code'][$id];
+											$doc['code-demo']['code'][$id] = (!isset($_SERVER['HTTPS']) || (isset($_SERVER['HTTPS']) && is_null($_SERVER['HTTPS'])) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$doc['code-demo']['code'][$id];
 										}
 										$doc['code-demo']['code'] = implode("\n", $doc['code-demo']['code']);
 										?>
@@ -146,7 +146,7 @@
 						$route_doc['code-demo']['type'] = 'http';
 						$route_doc['code-demo']['code'] = explode("\n", $route_doc['code-demo']['code']);
 						foreach ($route_doc['code-demo']['code'] as $id => $code) {
-							$route_doc['code-demo']['code'][$id] = (is_null($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$route_doc['code-demo']['code'][$id];
+							$route_doc['code-demo']['code'][$id] = (!isset($_SERVER['HTTPS']) || (isset($_SERVER['HTTPS']) && is_null($_SERVER['HTTPS'])) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$route_doc['code-demo']['code'][$id];
 						}
 						$route_doc['code-demo']['code'] = implode("\n", $route_doc['code-demo']['code']);
 						?>

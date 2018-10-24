@@ -2,6 +2,7 @@
 
 use mvc_framework\app\mvc\controllers\HelloWorld;
 use mvc_framework\core\router\Router;
+use mvc_framework\core\starter\AppStarter;
 
 /**
  * @route
@@ -27,7 +28,7 @@ function HelloWorld_routes() {
 																  'argv' => $http_argv,
 																  'http' => $api_argv,
 															  ]));
-	}, 'api');
+	}, AppStarter::PAGE_API);
 
 	Router::route_controller('/toto/@id/@nom/@prenom', HelloWorld::class, 'Get', 'front');
 }

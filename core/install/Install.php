@@ -60,7 +60,8 @@ class Install {
 						]
 					],
 					'require' => [
-						'philo/laravel-blade' => '3.*'
+						'philo/laravel-blade' => '3.*',
+						'phpunit/phpunit' => '^7',
 					]
 				]
 			));
